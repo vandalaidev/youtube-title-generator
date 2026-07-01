@@ -8,21 +8,16 @@ export default function YouTubeGenerator() {
   const [copied, setCopied] = useState(null);
 
   const titleHooks = [
-    `[NUMBER] {keyword} That {action}`,
-    `EXPOSED: The Truth About {keyword}`,
-    `{keyword} HACK That {action}`,
-    `Why {keyword} Is {adjective} (Explained)`,
-    `{keyword} Gone WRONG 😱`,
-    `I Tried {keyword} For 30 Days...`,
-    `The {adjective} {keyword} Guide`,
-    `{keyword} Mistakes You're Making`,
-    `How To {action} With {keyword}`,
-    `The BEST {keyword} In [YEAR]`,
-    `{keyword} Tutorial For Beginners`,
-    `I Spent $1000 On {keyword}...`,
-    `The {keyword} Challenge`,
-    `UNBELIEVABLE {keyword} Results 🤯`,
-    `{keyword} Tier List (S to F)`,
+    "[NUMBER] {keyword} That {action}",
+    "EXPOSED: The Truth About {keyword}",
+    "{keyword} HACK That {action}",
+    "Why {keyword} Is {adjective} (Explained)",
+    "{keyword} Gone WRONG",
+    "I Tried {keyword} For 30 Days...",
+    "The {adjective} {keyword} Guide",
+    "{keyword} Mistakes You're Making",
+    "How To {action} With {keyword}",
+    "The BEST {keyword}",
   ];
 
   const generateTitles = () => {
@@ -31,14 +26,10 @@ export default function YouTubeGenerator() {
       return;
     }
 
-    const keywordArray = keywords
-      .split(",")
-      .map((k) => k.trim())
-      .filter((k) => k);
+    const keywordArray = keywords.split(",").map(k => k.trim()).filter(k => k);
     const keyword = keywordArray[0] || topic;
-
-    const adjectives = ["best", "worst", "easy", "hard", "simple", "complex", "amazing", "crazy"];
-    const actions = ["saves time", "changes lives", "makes money", "works", "wins", "dominates"];
+    const adjectives = ["best", "worst", "easy", "hard", "amazing", "crazy"];
+    const actions = ["saves time", "changes lives", "makes money", "wins"];
 
     const generated = titleHooks.slice(0, 8).map((hook) => {
       let title = hook
@@ -56,22 +47,20 @@ export default function YouTubeGenerator() {
   const generateDescriptions = (topic, keyword) => {
     const hooks = [
       `In this video, I show you exactly how to ${topic.toLowerCase()}.`,
-      `Ever wondered how to ${topic.toLowerCase()}? Here's the complete guide.`,
+      `Ever wondered how to ${topic.toLowerCase()}? Here's the guide.`,
       `This is the ULTIMATE guide to ${topic.toLowerCase()}.`,
       `Stop wasting time. Learn ${topic.toLowerCase()} the right way.`,
-      `I'm breaking down everything about ${topic.toLowerCase()}.`,
     ];
 
     const ctas = [
       "Don't forget to like, subscribe, and hit the notification bell!",
-      "Like and subscribe for more content like this!",
-      "Subscribe and turn on notifications for daily uploads!",
-      "Hit that subscribe button and join the community!",
+      "Like and subscribe for more!",
+      "Subscribe for daily uploads!",
     ];
 
     const generated = hooks.map((hook) => {
       const cta = ctas[Math.floor(Math.random() * ctas.length)];
-      return `${hook}\n\n${cta}\n\nTimestamps:\n0:00 - Intro\n1:23 - Main Content\n8:45 - Conclusion\n\n#${keyword} #Tutorial #Guide`;
+      return `${hook}\n\n${cta}\n\nTimestamps:\n0:00 - Intro\n2:30 - Main\n8:00 - Outro\n\n#${keyword} #Tutorial`;
     });
 
     setDescriptions(generated);
@@ -91,8 +80,8 @@ export default function YouTubeGenerator() {
 
     let csv = "TITLE,DESCRIPTION\n";
     titles.forEach((title, i) => {
-      const desc = descriptions[i] || "";
-      csv += `"${title.replace(/"/g, '""')}","${desc.replace(/"/g, '""')}"\n`;
+      const desc = (descriptions[i] || "").replace(/"/g, '""');
+      csv += `"${title.replace(/"/g, '""')}","${desc}"\n`;
     });
 
     const blob = new Blob([csv], { type: "text/csv" });
@@ -104,88 +93,84 @@ export default function YouTubeGenerator() {
   };
 
   return (
-    <>
-      <style jsx global>{`
-        * {
-          margin: 0;
-          padding: 0;
-          box-sizing: border-box;
-        }
+    <div style={{ fontFamily: "sans-serif", background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)", minHeight: "100vh", padding: "40px 20px" }}>
+      <div style={{ maxWidth: "1400px", margin: "0 auto" }}>
+        <div style={{ background: "white", padding: "40px", borderRadius: "16px", marginBottom: "40px", boxShadow: "0 10px 40px rgba(0,0,0,0.1)" }}>
+          <h1 style={{ fontSize: "42px", marginBottom: "10px", color: "#667eea" }}>🎬 YouTube Title Generator</h1>
+          <p style={{ fontSize: "16px", color: "#666" }}>Generate viral titles and descriptions in seconds</p>
+        </div>
 
-        body {
-          font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-          background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-          min-height: 100vh;
-          color: #333;
-        }
+        <div style={{ display: "grid", gridTemplateColumns: "350px 1fr", gap: "30px" }}>
+          {/* Input */}
+          <div style={{ background: "white", borderRadius: "16px", padding: "30px", boxShadow: "0 10px 40px rgba(0,0,0,0.1)" }}>
+            <div style={{ marginBottom: "20px" }}>
+              <label style={{ display: "block", fontWeight: "600", marginBottom: "8px" }}>Video Topic</label>
+              <textarea
+                value={topic}
+                onChange={(e) => setTopic(e.target.value)}
+                placeholder="e.g., How to make money online"
+                style={{ width: "100%", padding: "12px", border: "2px solid #e0e0e0", borderRadius: "8px", fontFamily: "inherit", minHeight: "80px" }}
+              />
+            </div>
 
-        .container {
-          max-width: 1400px;
-          margin: 0 auto;
-          padding: 40px 20px;
-        }
+            <div style={{ marginBottom: "20px" }}>
+              <label style={{ display: "block", fontWeight: "600", marginBottom: "8px" }}>Keywords</label>
+              <textarea
+                value={keywords}
+                onChange={(e) => setKeywords(e.target.value)}
+                placeholder="e.g., money, passive income"
+                style={{ width: "100%", padding: "12px", border: "2px solid #e0e0e0", borderRadius: "8px", fontFamily: "inherit", minHeight: "80px" }}
+              />
+            </div>
 
-        .header {
-          background: white;
-          padding: 40px;
-          border-radius: 16px;
-          margin-bottom: 40px;
-          box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
-        }
+            <button
+              onClick={generateTitles}
+              style={{ width: "100%", padding: "14px", background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)", border: "none", borderRadius: "8px", color: "white", fontWeight: "600", cursor: "pointer" }}
+            >
+              Generate
+            </button>
 
-        .header h1 {
-          font-size: 42px;
-          margin-bottom: 10px;
-          color: #667eea;
-        }
+            {titles.length > 0 && (
+              <button
+                onClick={downloadAsCSV}
+                style={{ width: "100%", padding: "14px", background: "#f0f0f0", border: "none", borderRadius: "8px", color: "#333", fontWeight: "600", cursor: "pointer", marginTop: "10px" }}
+              >
+                📥 Download CSV
+              </button>
+            )}
+          </div>
 
-        .header p {
-          font-size: 16px;
-          color: #666;
-        }
-
-        .grid {
-          display: grid;
-          grid-template-columns: 350px 1fr;
-          gap: 30px;
-          margin-bottom: 30px;
-        }
-
-        @media (max-width: 1024px) {
-          .grid {
-            grid-template-columns: 1fr;
-          }
-        }
-
-        .panel {
-          background: white;
-          border-radius: 16px;
-          padding: 30px;
-          box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
-        }
-
-        .form-group {
-          margin-bottom: 20px;
-        }
-
-        .form-group label {
-          display: block;
-          font-weight: 600;
-          margin-bottom: 8px;
-          color: #333;
-          font-size: 14px;
-        }
-
-        textarea,
-        input {
-          width: 100%;
-          padding: 12px;
-          border: 2px solid #e0e0e0;
-          border-radius: 8px;
-          font-family: inherit;
-          font-size: 14px;
-        }
-
-        textarea:focus,
-        input:focus {
-          outline: none;
+          {/* Results */}
+          <div style={{ background: "white", borderRadius: "16px", padding: "30px", boxShadow: "0 10px 40px rgba(0,0,0,0.1)" }}>
+            {titles.length === 0 ? (
+              <p style={{ textAlign: "center", color: "#999", padding: "60px 20px" }}>✨ Enter a topic to get started</p>
+            ) : (
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: "20px" }}>
+                {titles.map((title, i) => (
+                  <div key={i} style={{ background: "#f9f9f9", borderRadius: "12px", padding: "20px", borderLeft: "4px solid #667eea" }}>
+                    <h3 style={{ fontSize: "12px", color: "#999", textTransform: "uppercase", marginBottom: "10px" }}>Title {i + 1}</h3>
+                    <div style={{ fontSize: "16px", fontWeight: "600", marginBottom: "15px", lineHeight: "1.4" }}>{title}</div>
+                    <h3 style={{ fontSize: "12px", color: "#999", textTransform: "uppercase", marginBottom: "10px", marginTop: "20px" }}>Description</h3>
+                    <div style={{ fontSize: "13px", color: "#666", lineHeight: "1.6", marginBottom: "15px", whiteSpace: "pre-wrap", maxHeight: "120px", overflow: "auto" }}>{descriptions[i]}</div>
+                    <button
+                      onClick={() => copyToClipboard(title, `title-${i}`)}
+                      style={{ width: "100%", padding: "10px", background: "#667eea", color: "white", border: "none", borderRadius: "6px", cursor: "pointer", fontWeight: "500", marginBottom: "8px" }}
+                    >
+                      {copied === `title-${i}` ? "✓ Copied!" : "Copy Title"}
+                    </button>
+                    <button
+                      onClick={() => copyToClipboard(descriptions[i], `desc-${i}`)}
+                      style={{ width: "100%", padding: "10px", background: "#667eea", color: "white", border: "none", borderRadius: "6px", cursor: "pointer", fontWeight: "500" }}
+                    >
+                      {copied === `desc-${i}` ? "✓ Copied!" : "Copy Desc"}
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
